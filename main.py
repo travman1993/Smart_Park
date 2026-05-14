@@ -19,10 +19,10 @@ class SmartParkSystem:
     # Everything is initializing
     def __init__(self):
         # Variables
-        self.current_mode
-        self.running
-        self.entry_enabled
-        self.exit_enabled
+        self.current_mode = None
+        self.running = True
+        self.entry_enabled = True
+        self.exit_enabled = True
 
         # Initializing All Modules
         self.config = SystemConfig()
@@ -46,14 +46,22 @@ class SmartParkSystem:
     # Main Loop
     def run(self):
         while self.running:
-            check_entry_sensor()
-            check_exit_sensor()
+            self.check_entry_sensor()
+            self.check_exit_sensor()
+    
+    def check_entry_sensor(self):
+        if self.sensors.entry_triggered():
+            self.process_entry()
+
+    def check_exit_sensor(self):
+        if self.sensors.exit_triggered():
+            self.process_exit()
 
     # Entry Handler
     def process_entry(self):
         if self.occupancy.is_full():
             self.gates.keep_closed()
-            display_message("NO ROOM AVAILABLE")
+            print("NO ROOM AVAILABLE")
         else:
             # Detect Vehicle Type
             vehicle_type = self.sensors.detect_vehicle_type()
@@ -67,4 +75,27 @@ class SmartParkSystem:
             approved = self.ai.validate_access(
                 plate,
                 self.current_mode
-            )    
+            )
+            
+            if not approved:
+                self.security.log_denial(plate)
+                self.gates.keep_closed()
+                print("ACCESS DENIED")
+                return
+            
+            session = self.database.create_session(
+                plate=plate,
+                vehicle_type=vehicle_type,
+                driver_photo=driver_photo,
+                passenger_photo=passenger_photo,
+                mode=self.current_mode
+            )
+            # Update Occupancy
+            self.occupancy.vehicle_entered()
+            # Update Analytics
+            self.analytics.register_vehicle(vehicle_type)
+            # Open Gate
+            self.gates.open_entry_gate()
+            print(f"{plate} entered successfully")
+
+    # Exit Handler

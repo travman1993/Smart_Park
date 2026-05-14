@@ -17,7 +17,7 @@ from datetime import datetime
 
 # Main Class - Master controller
 class SmartParkSystem:
-    # Everything is initializing
+    ##### Everything is initializing #####
     def __init__(self):
         # Variables
         self.current_mode = None
@@ -41,10 +41,15 @@ class SmartParkSystem:
         # System Start UP
         self.start_system()
     
-    # Start System Funciton
-    # def start_system(self):
+    ##### Start System Funciton #####
+    def start_system(self):
+        self.curent_mode = "garage"
 
-    # Main Loop
+        print("SYSTEM STARTED")
+
+        self.run()
+
+    ##### Main Loop
     def run(self):
         while self.running:
             self.check_entry_sensor()
@@ -58,7 +63,7 @@ class SmartParkSystem:
         if self.sensors.exit_triggered():
             self.process_exit()
 
-    # Entry Handler
+    ##### Entry Handler #####
     def process_entry(self):
         if self.occupancy.is_full():
 
@@ -91,7 +96,7 @@ class SmartParkSystem:
             
         entry_time = datetime.now()
 
-        session = self.database.create_session(
+        self.database.create_session(
             plate=plate,
             vehicle_type=vehicle_type,
             driver_photo=driver_photo,
@@ -107,7 +112,7 @@ class SmartParkSystem:
         self.gates.open_entry_gate()
         print(f"{plate} entered successfully")
 
-    # Exit Handler
+    ##### Exit Handler #####
     def process_exit(self):
         # Capture Plate 
         plate_photo = self.camera.capture_exit_plate()

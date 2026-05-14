@@ -68,44 +68,44 @@ class SmartParkSystem:
 
             return
         
-        else:
-            # Detect Vehicle Type
-            vehicle_type = self.sensors.detect_vehicle_type()
-            # Capture Driver, Passenger and Plate Photo
-            driver_photo = self.camera.capture_driver()
-            passenger_photo = self.camera.capture_passenger()
-            plate_photo = self.camera.capture_entry_plate()
-            # OCR Plate Check plate for entry
-            plate = self.ai.scan_plate(plate_photo)
-            # Security Check
-            approved = self.ai.validate_access(
-                plate,
-                self.current_mode
-            )
+        
+        # Detect Vehicle Type
+        vehicle_type = self.sensors.detect_vehicle_type()
+        # Capture Driver, Passenger and Plate Photo
+        driver_photo = self.camera.capture_driver()
+        passenger_photo = self.camera.capture_passenger()
+        plate_photo = self.camera.capture_entry_plate()
+        # OCR Plate Check plate for entry
+        plate = self.ai.scan_plate(plate_photo)
+        # Security Check
+        approved = self.ai.validate_access(
+            plate,
+            self.current_mode
+        )
             
-            if not approved:
-                self.security.log_denial(plate)
-                self.gates.keep_closed()
-                print("ACCESS DENIED")
-                return
+        if not approved:
+            self.security.log_denial(plate)
+            self.gates.keep_closed()
+            print("ACCESS DENIED")
+            return
             
-            entry_time = datetime.now()
+        entry_time = datetime.now()
 
-            session = self.database.create_session(
-                plate=plate,
-                vehicle_type=vehicle_type,
-                driver_photo=driver_photo,
-                passenger_photo=passenger_photo,
-                mode=self.current_mode,
-                entry_time=entry_time
-            )
-            # Update Occupancy
-            self.occupancy.vehicle_entered()
-            # Update Analytics
-            self.analytics.register_vehicle(vehicle_type)
-            # Open Gate
-            self.gates.open_entry_gate()
-            print(f"{plate} entered successfully")
+        session = self.database.create_session(
+            plate=plate,
+            vehicle_type=vehicle_type,
+            driver_photo=driver_photo,
+            passenger_photo=passenger_photo,
+            mode=self.current_mode,
+            entry_time=entry_time
+        )
+        # Update Occupancy
+        self.occupancy.vehicle_entered()
+        # Update Analytics
+        self.analytics.register_vehicle(vehicle_type)
+        # Open Gate
+        self.gates.open_entry_gate()
+        print(f"{plate} entered successfully")
 
     # Exit Handler
     def process_exit(self):
@@ -125,6 +125,8 @@ class SmartParkSystem:
         charge = 0
         payment_success = True
         exit_time = datetime.now()
+        duration = exit_time - session["entry_time"]
+        print(f"Vehicle stayed: {duration}")
 
         # Calculating charge based on end of session
         if self.current_mode == "garage":
@@ -133,13 +135,13 @@ class SmartParkSystem:
                 session["entry_time"],
                 exit_time
             )
-        # Payment
-        payment_success = self.billing.process_payment(charge)
-        # Failed Payment
-        if not payment_success:
-            print("Payment Failed")
-            self.gates.keep_closed()
-            return
+            # Payment
+            payment_success = self.billing.process_payment(charge)
+            # Failed Payment
+            if not payment_success:
+                print("Payment Failed")
+                self.gates.keep_closed()
+                return
         # Close Session
         self.database.close_session(
             plate=plate,

@@ -13,6 +13,7 @@ from billing import BillingEngine
 from analytics import AnalyticsTracker
 from ai_system import AIRecognition 
 from occupancy import OccupancyManager
+from datetime import datetime
 
 # Main Class - Master controller
 class SmartParkSystem:
@@ -60,15 +61,20 @@ class SmartParkSystem:
     # Entry Handler
     def process_entry(self):
         if self.occupancy.is_full():
+
             self.gates.keep_closed()
+
             print("NO ROOM AVAILABLE")
+
+            return
+        
         else:
             # Detect Vehicle Type
             vehicle_type = self.sensors.detect_vehicle_type()
             # Capture Driver, Passenger and Plate Photo
             driver_photo = self.camera.capture_driver()
             passenger_photo = self.camera.capture_passenger()
-            plate_photo = self.camera.capture_plate()
+            plate_photo = self.camera.capture_entry_plate()
             # OCR Plate Check plate for entry
             plate = self.ai.scan_plate(plate_photo)
             # Security Check
@@ -83,12 +89,15 @@ class SmartParkSystem:
                 print("ACCESS DENIED")
                 return
             
+            entry_time = datetime.now()
+
             session = self.database.create_session(
                 plate=plate,
                 vehicle_type=vehicle_type,
                 driver_photo=driver_photo,
                 passenger_photo=passenger_photo,
-                mode=self.current_mode
+                mode=self.current_mode,
+                entry_time=entry_time
             )
             # Update Occupancy
             self.occupancy.vehicle_entered()
@@ -99,3 +108,47 @@ class SmartParkSystem:
             print(f"{plate} entered successfully")
 
     # Exit Handler
+    def process_exit(self):
+        # Capture Plate 
+        plate_photo = self.camera.capture_exit_plate()
+        # AI Scan Plate
+        plate = self.ai.scan_plate(plate_photo)
+        # Checking Data for active time session
+        session = self.database.find_active_session(plate)
+
+        if not session:
+            # Sending error and plate scan
+            self.security.flag_unmatched_exit(plate)
+            print('NO ACTIVE SESSION FOUND')
+            return
+        
+        charge = 0
+        payment_success = True
+        exit_time = datetime.now()
+
+        # Calculating charge based on end of session
+        if self.current_mode == "garage":
+            # Calculate Charge
+            charge = self.billing.calculate_charge(
+                session["entry_time"],
+                exit_time
+            )
+        # Payment
+        payment_success = self.billing.process_payment(charge)
+        # Failed Payment
+        if not payment_success:
+            print("Payment Failed")
+            self.gates.keep_closed()
+            return
+        # Close Session
+        self.database.close_session(
+            plate=plate,
+            exit_time=exit_time,
+            charge=charge
+        )
+        # Update Occupancy
+        self.occupancy.vehicle_exited()
+        # Open Gate
+        self.gates.open_exit_gate()
+        print(f"{plate} exited successfully")
+

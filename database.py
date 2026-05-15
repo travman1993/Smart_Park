@@ -1,5 +1,7 @@
 from datetime import datetime
 
+import main
+
 # Main Class
 class ParkingDatabase:
     ###### Initializing #####
@@ -14,8 +16,8 @@ class ParkingDatabase:
         self.total_revenue = 0
 
     ##### Create Session #####
-    def create_session():
-
+    def create_session(self, plate, vehicle_type, driver_photo, passenger_photo, mode, entry_time):
+        
 
     ##### Find Active Session #####
     def find_active_session():
@@ -23,4 +25,3 @@ class ParkingDatabase:
 
     ##### Close Session #####
     def close_session():
-             

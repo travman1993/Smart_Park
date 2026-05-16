@@ -3,10 +3,12 @@ from datetime import datetime
 ##### Main Class #####
 class BillingEngine:
     def __init__(self):
-        None
+        self.hourly_rate = 5
+        self.daily_max = 25
+        self.grace_period = 30
 
     ##### Calculate Charge #####
-    def calculate_charge(self, session, exit_time):
+    def calculate_charge(self, entry_time, exit_time):
         None    
 
     ##### Process Payment #####

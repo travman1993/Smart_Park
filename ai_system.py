@@ -2,12 +2,14 @@
 class AIRecognition:
     ##### Initializing #####
     def __init__(self):
-        None
+        pass
     
     ##### OCR Plate Check #####
     def scan_plate(self, plate_photo):
-        None
+        return "ATL4289"
 
     ##### Validate Access #####
     def validate_access(self, plate, current_mode):
-        None
+        if not plate:
+            return False
+        return True

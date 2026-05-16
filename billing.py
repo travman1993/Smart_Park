@@ -1,10 +1,11 @@
 ##### Main Class #####
 class BillingEngine:
     ##### Initializing #####
-    def __init__(self):
-        self.hourly_rate = 5
-        self.daily_max = 25
-        self.grace_period = 30
+    # Config is passed in so billing never hardcodes its own rates
+    def __init__(self, config):
+        self.hourly_rate = config.hourly_rate
+        self.daily_max = config.daily_max
+        self.grace_period = config.grace_period
 
     ##### Calculate Charge #####
     def calculate_charge(self, entry_time, exit_time):

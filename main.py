@@ -19,22 +19,22 @@ from datetime import datetime
 class SmartParkSystem:
     ##### Everything is initializing #####
     def __init__(self):
-        # Variables
-        self.current_mode = None
+        # Config loads first — all other modules pull their settings from it
+        self.config = SystemConfig()
+
+        self.current_mode = self.config.default_mode
         self.running = True
         self.entry_enabled = True
         self.exit_enabled = True
-        self.max_capacity = int(input("Enter max parking capacity: "))
 
         # Initializing All Modules
-        self.config = SystemConfig()
         self.database = ParkingDatabase()
         self.sensors = SensorSystem()
         self.camera = CameraSystem()
         self.ai = AIRecognition()
         self.gates = GateController()
-        self.billing = BillingEngine()
-        self.occupancy = OccupancyManager(self.max_capacity)
+        self.billing = BillingEngine(self.config)
+        self.occupancy = OccupancyManager(self.config.max_capacity)
         self.analytics  = AnalyticsTracker()
         self.security = SecuritySystem()
         self.parking_modes = ModeManager()
@@ -44,9 +44,7 @@ class SmartParkSystem:
     
     ##### Start System Funciton #####
     def start_system(self):
-        self.current_mode = "garage"
-
-        print("SYSTEM STARTED")
+        print(f"SYSTEM STARTED — {self.config.facility_name} | Mode: {self.current_mode}")
 
         self.run()
 

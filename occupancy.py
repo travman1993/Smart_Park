@@ -1,20 +1,19 @@
-from datetime import datetime
 
 # Main Class
 class OccupancyManager:
-    ##### Inizializing #####
-    def __init__(self):
+    ##### Initializing #####
+    def __init__(self, max_capacity):
         # Variables
-        self.max_capacity = 0
+        self.max_capacity = max_capacity
         self.current_occupancy = 0
-        self.availible_spaces = 0
+        self.available_spaces = 0
 
-    ##### Availible spaces counter #####
-    def get_availible_spaces(self):
-        self.availible_spaces = (self.max_capacity - self.current_occupancy)
-        return self.availible_spaces
+    ##### Availible Spaces Counter #####
+    def get_available_spaces(self):
+        self.available_spaces = (self.max_capacity - self.current_occupancy)
+        return self.available_spaces
 
-    ##### Full Compacity #####
+    ##### Full Capacity #####
     def is_full(self):
         if self.current_occupancy >= self.max_capacity:
             return True

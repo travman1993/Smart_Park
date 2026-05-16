@@ -1,5 +1,3 @@
-from datetime import datetime
-
 ##### Main Class #####
 class BillingEngine:
     ##### Initializing #####
@@ -12,7 +10,7 @@ class BillingEngine:
     def calculate_charge(self, entry_time, exit_time):
         duration = exit_time - entry_time
         minutes_parked = duration.total_seconds() / 60
-
+        charge = 0
         if minutes_parked <= self.grace_period:
             return 0
         

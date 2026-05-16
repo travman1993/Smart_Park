@@ -24,6 +24,7 @@ class SmartParkSystem:
         self.running = True
         self.entry_enabled = True
         self.exit_enabled = True
+        self.max_capacity = int(input("Enter max parking capacity: "))
 
         # Initializing All Modules
         self.config = SystemConfig()
@@ -33,7 +34,7 @@ class SmartParkSystem:
         self.ai = AIRecognition()
         self.gates = GateController()
         self.billing = BillingEngine()
-        self.occupancy = OccupancyManager()
+        self.occupancy = OccupancyManager(self.max_capacity)
         self.analytics  = AnalyticsTracker()
         self.security = SecuritySystem()
         self.parking_modes = ModeManager()
@@ -43,13 +44,13 @@ class SmartParkSystem:
     
     ##### Start System Funciton #####
     def start_system(self):
-        self.curent_mode = "garage"
+        self.current_mode = "garage"
 
         print("SYSTEM STARTED")
 
         self.run()
 
-    ##### Main Loop
+    ##### Main Loop #####
     def run(self):
         while self.running:
             self.check_entry_sensor()

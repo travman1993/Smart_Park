@@ -37,7 +37,7 @@ class SmartParkSystem:
         self.occupancy = OccupancyManager(self.config.max_capacity)
         self.analytics  = AnalyticsTracker()
         self.security = SecuritySystem()
-        self.parking_modes = ModeManager()
+        self.parking_modes = ModeManager(self.config.user_selected_mode)
 
         # System Start UP
         self.start_system()

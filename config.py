@@ -12,7 +12,7 @@ class SystemConfig:
         # and as a safety net if a setting is missing from the file
         self.facility_name = ""
         self.max_capacity = 0
-        self.default_mode = "garage"
+        self.default_mode = ""
         self.hourly_rate = 0.0
         self.daily_max = 0.0
         self.grace_period = 0
@@ -29,6 +29,7 @@ class SystemConfig:
         print("\n=== Smart Park — First Time Setup ===")
 
         self.facility_name = input("Facility name: ").strip()
+        self.user_selected_mode = input("Choose type of parking mode: ")
         self.max_capacity = self._get_int("Max parking capacity: ")
         self.hourly_rate = self._get_float("Hourly parking rate ($): ")
         self.daily_max = self._get_float("Daily maximum charge ($): ")
@@ -40,6 +41,7 @@ class SystemConfig:
     def _save(self):
         data = {
             "facility_name": self.facility_name,
+            "user_selected_mode": self.user_selected_mode,
             "max_capacity": self.max_capacity,
             "default_mode": self.default_mode,
             "hourly_rate": self.hourly_rate,
@@ -56,6 +58,7 @@ class SystemConfig:
 
         # .get(key, default) safely handles missing keys in older config files
         self.facility_name = data.get("facility_name", "")
+        self.user_selected_mode = data.get("user_selected_mode", "")
         self.max_capacity = data.get("max_capacity", 0)
         self.default_mode = data.get("default_mode", "garage")
         self.hourly_rate = data.get("hourly_rate", 0.0)

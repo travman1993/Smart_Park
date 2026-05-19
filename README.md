@@ -35,3 +35,34 @@ COMING SOON
 
 ___
 
+# Tech Stack
+
+## Current
+
+- Python
+- JSON
+- Object-Oriented Programming 
+- Modular System Architecture
+
+## Planned
+
+- SQlite
+- Flask
+- OpenCV
+- Raspberry Pi
+- Web Dashboards
+
+---
+
+# Current Status
+
+SmartPark is currently in active development. Core backend logic, parking workflows and modular architechure planning are implemented. Dashboard systems, simulation interfaces and advanced AI integrations are currently being developed.
+
+---
+
+# Installation
+
+```bash
+git clone https://github.com/travman1993/Smart_Park.git
+cd Smart_Park
+python main.py

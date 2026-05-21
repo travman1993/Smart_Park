@@ -1,5 +1,6 @@
 ### Main Class ###
 class GateController:
+    ### Initializing ###
     def __init__(self):
         self.closed_gate = True
         self.open_gate = False

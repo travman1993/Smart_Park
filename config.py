@@ -30,6 +30,7 @@ class SystemConfig:
 
         self.facility_name = input("Facility name: ").strip()
         self.user_selected_mode = input("Choose type of parking mode: ")
+        self.default_mode = self.user_selected_mode
         self.max_capacity = self._get_int("Max parking capacity: ")
         self.hourly_rate = self._get_float("Hourly parking rate ($): ")
         self.daily_max = self._get_float("Daily maximum charge ($): ")

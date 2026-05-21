@@ -3,7 +3,7 @@ class SensorSystem:
     ##### Initializing #####
     def __init__(self):
         self.vehicle_at_entry = {}
-        self.vehicle_at_entry = {}
+        self.vehicle_at_exit = {}
         
     ##### Entry Triggered #####
     def entry_triggered(self):

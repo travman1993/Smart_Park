@@ -1,5 +1,7 @@
+import time
+
 # UI
-import tkinter as tk
+
 
 # System Modiules
 from config import SystemConfig
@@ -53,6 +55,7 @@ class SmartParkSystem:
         while self.running:
             self.check_entry_sensor()
             self.check_exit_sensor()
+            time.sleep(0.1)
     
     def check_entry_sensor(self):
         if self.sensors.entry_triggered():

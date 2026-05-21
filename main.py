@@ -113,6 +113,7 @@ class SmartParkSystem:
         # Open Gate
         self.gates.open_entry_gate()
         print(f"{plate} entered successfully")
+        self.gates.close_gate_after()
 
     ##### Exit Handler #####
     def process_exit(self):
@@ -160,4 +161,5 @@ class SmartParkSystem:
         # Open Gate
         self.gates.open_exit_gate()
         print(f"{plate} exited successfully")
+        self.gates.close_gate_after()
 

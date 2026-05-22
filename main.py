@@ -83,9 +83,8 @@ class SmartParkSystem:
         # Capture Driver, Passenger and Plate Photo
         driver_photo = self.camera.capture_driver()
         passenger_photo = self.camera.capture_passenger()
-        plate_photo = self.camera.capture_entry_plate()
         # OCR Plate Check plate for entry
-        plate = self.ai.scan_plate(plate_photo)
+        plate = self.ai.scan_plate(self.sensors.plate_generator())
         # Security Check
         approved = self.ai.validate_access(
             plate,
@@ -125,10 +124,8 @@ class SmartParkSystem:
             self.occupancy.vehicle_exited()
             return
         
-        # Capture Plate 
-        plate_photo = self.camera.capture_exit_plate()
         # AI Scan Plate
-        plate = self.ai.scan_plate(plate_photo)
+        plate = self.ai.scan_plate(self.sensors.plate_generator())
         # Checking Data for active time session
         session = self.database.find_active_session(plate)
 

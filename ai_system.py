@@ -5,8 +5,8 @@ class AIRecognition:
         pass
     
     ##### OCR Plate Check #####
-    def scan_plate(self, plate_photo):
-        return "ATL4289"
+    def scan_plate(self, plate):
+        return plate
 
     ##### Validate Access #####
     def validate_access(self, plate, current_mode, residential_plate):

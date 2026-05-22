@@ -89,7 +89,8 @@ class SmartParkSystem:
         # Security Check
         approved = self.ai.validate_access(
             plate,
-            self.current_mode
+            self.current_mode,
+            self.database.residential_plate
         )
             
         if not approved:
@@ -119,7 +120,7 @@ class SmartParkSystem:
 
     ##### Exit Handler #####
     def process_exit(self):
-        
+
         if self.current_mode in ("event", "valet"):
             self.occupancy.vehicle_exited()
             return

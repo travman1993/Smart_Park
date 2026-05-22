@@ -8,7 +8,7 @@ class ParkingDatabase:
         # Variables
         self.active_sessions = {}
         self.completed_sessions = []
-        self.residential_plate ={}
+        self.residential_plate = []
         self.vehicle_records = {}
 
     ##### Create Session #####
@@ -44,3 +44,10 @@ class ParkingDatabase:
             del self.active_sessions[plate]
             return session
         return None
+
+    ##### Cross Checking plate #####
+    def is_resident(self, plate):
+        if plate in self.residential_plate:
+            return True
+        else:
+            return False

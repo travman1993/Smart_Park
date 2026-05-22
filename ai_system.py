@@ -9,7 +9,7 @@ class AIRecognition:
         return "ATL4289"
 
     ##### Validate Access #####
-    def validate_access(self, plate, current_mode):
-        if not plate:
-            return False
+    def validate_access(self, plate, current_mode, residential_plate):
+        if current_mode == "residential":
+            return plate in residential_plate
         return True

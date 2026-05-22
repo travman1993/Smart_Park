@@ -69,12 +69,14 @@ class SmartParkSystem:
     def process_entry(self):
         if self.occupancy.is_full():
 
-            self.gates.keep_closed()
-
+            if self.current_mode not in ("event", "valet"):
+                self.gates.keep_closed()
             print("NO ROOM AVAILABLE")
-
-            return
+            return          
         
+        if self.current_mode in ("event", "valet"):
+            self.occupancy.vehicle_entered()
+            return
         
         # Detect Vehicle Type
         vehicle_type = self.sensors.detect_vehicle_type()
@@ -117,6 +119,11 @@ class SmartParkSystem:
 
     ##### Exit Handler #####
     def process_exit(self):
+        
+        if self.current_mode in ("event", "valet"):
+            self.occupancy.vehicle_exited()
+            return
+        
         # Capture Plate 
         plate_photo = self.camera.capture_exit_plate()
         # AI Scan Plate
